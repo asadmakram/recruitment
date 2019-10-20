@@ -1,0 +1,44 @@
+service: recruitment
+
+
+# package:
+#   individually: true
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  environment:
+    CANDIDATE_TABLE: ${self:custom.candidateTable}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CANDIDATE_TABLE}"
+
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  candidateTable: ${self:provider.stage}-candidates
+
+functions:
+  createCandidates:
+    handler: functions/candidates/createCandidate.handler
+    environment:
+      CANDIDATE_TABLE: ${self:custom.candidateTable}
+    events:
+      - http:
+          path: candidate
+          method: post
+          cors: true
+
+# plugins:
+#   - serverless-dynamodb-local
+
+resources:
+  #DynamoDB
+  - ${file(resources/dynamodb-table.yml)}

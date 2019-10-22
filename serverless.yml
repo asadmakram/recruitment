@@ -26,16 +26,22 @@ custom:
   candidateTable: ${self:provider.stage}-candidates
 
 functions:
-  createCandidates:
+  createCandidate:
     handler: functions/candidates/createCandidate.handler
-    environment:
-      CANDIDATE_TABLE: ${self:custom.candidateTable}
+    # environment:
+    #   CANDIDATE_TABLE: ${self:custom.candidateTable}
     events:
       - http:
           path: candidate
           method: post
           cors: true
-
+  getCandidate:
+    handler: functions/candidates/getCandidate.handler
+    events:
+      - http:
+          path: candidate/{emailAddress}
+          method: get
+          cors: true
 # plugins:
 #   - serverless-dynamodb-local
 

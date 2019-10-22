@@ -18,6 +18,11 @@ class DBWrapper{
             })
         });
     }
+
+    static async Get(params) {
+
+        return await DynamoClient.get(params).promise();
+    }
 }
 
 

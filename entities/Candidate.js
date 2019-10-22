@@ -27,6 +27,20 @@ class Candidate
         console.log('adding in dynamo')
         return await DBWrapper.Add(params)
     }
+
+    static async get(emailAddress){
+
+        let params = {
+            TableName: process.env.CANDIDATE_TABLE,
+            Key: {
+                "emailAddress": emailAddress
+            }
+        };
+
+        var result =  await DBWrapper.Get(params);
+
+        return result ? result.Item : null;
+    }
 }
 
 module.exports = Candidate;

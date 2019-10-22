@@ -2,13 +2,16 @@ const Candidate = require('../../entities/Candidate');
 
 exports.handler = async (event, context, callback) => {
 
-    await createCandidate(event);
-    return sendRes(200,'Hello');
+  let body = JSON.parse(event.body)
+    await createCandidate(body);
+    return sendRes(200,'Successfully created student');
 };
 
 async function createCandidate (event) {
 
   console.log('creating a candidate');
+
+  console.log(event);
   await Candidate.create(event);
   console.log('Candidate successfully created');
 }
@@ -16,12 +19,7 @@ async function createCandidate (event) {
 const sendRes = (status, body) => {
   var response = {
     statusCode: status,
-    headers: {
-      "Content-Type": "text/html"
-    },
-    body: body
+    body: JSON.stringify(body)
   };
   return response;
 };
-
-//module.exports = handler;

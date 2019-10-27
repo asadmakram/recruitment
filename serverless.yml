@@ -24,6 +24,7 @@ provider:
 custom:
   stage: ${opt:stage, self:provider.stage}
   candidateTable: ${self:provider.stage}-candidates
+  resumeBucket: ${self:provider.stage}-candidates-resume
 
 functions:
   createCandidate:
@@ -48,3 +49,4 @@ functions:
 resources:
   #DynamoDB
   - ${file(resources/dynamodb-table.yml)}
+  - ${file(resources/s3-buckets.yml)}

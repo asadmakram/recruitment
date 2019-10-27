@@ -1,0 +1,5 @@
+Resources:
+  S3BucketPhotos:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.resumeBucket}

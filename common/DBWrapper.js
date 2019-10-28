@@ -19,6 +19,21 @@ class DBWrapper{
         });
     }
 
+    static async Update(params){
+
+        return new Promise((resolve, reject)=>{
+
+            DynamoClient.put(params, function (err, res){
+
+                if (err){
+                    reject(err);
+                } else{   
+                    resolve(res);
+                }
+            })
+        });
+    }
+
     static async Get(params) {
 
         return await DynamoClient.get(params).promise();

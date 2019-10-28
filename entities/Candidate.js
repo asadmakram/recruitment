@@ -18,14 +18,41 @@ class Candidate
             Item: {
                 name: candidate.name,
                 employerName: candidate.employerName,
-                employmentStatus : candidate.employmentStatus,
+                currentEmployer : candidate.currentEmployer,
+                designation: candidate.designation,
                 emailAddress : candidate.emailAddress,
-                contactNumber: candidate.contactNumber
+                contactNumber: candidate.contactNumber,
+                highestEducation: candidate.highestEducation||[],
+                education: candidate.education,
+                skills: candidate.skills || [],
+                experience: candidate.experience || []
             }
         }
 
         console.log('adding in dynamo')
         return await DBWrapper.Add(params)
+    }
+
+    static async update(candidate) {
+
+        const params = {
+            TableName : process.env.CANDIDATE_TABLE,
+            Item: {
+                name: candidate.name,
+                employerName: candidate.employerName,
+                currentEmployer : candidate.currentEmployer,
+                designation: candidate.designation,
+                emailAddress : candidate.emailAddress,
+                contactNumber: candidate.contactNumber,
+                highestEducation: candidate.highestEducation||[],
+                education: candidate.education,
+                skills: candidate.skills || [],
+                experience: candidate.experience || []
+            }
+        }
+
+        console.log('updating candidate information in dynamo')
+        return await DBWrapper.Update(params)
     }
 
     static async get(emailAddress){

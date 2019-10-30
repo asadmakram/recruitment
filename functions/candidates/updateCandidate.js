@@ -2,10 +2,29 @@ const Candidate = require('../../entities/Candidate');
 
 exports.handler = async (event, context, callback) => {
 
-  let body = JSON.parse(event.body)
-    await updateCandidate(body);
-    return sendRes(200,'Successfully updated student');
+  let body = JSON.parse(event.body);
+
+  let candidate = await getCandidate(body.emailAddress);
+
+  var errorMsg = validateChange(candidate, body);
+  if (errorMsg) {
+    return sendRes(400, errorMsg);
+  }
+
+  await updateCandidate(body);
+  return sendRes(200,'Successfully updated student');
 };
+
+function validateChange(candidate, body){
+  let errorMsg = "";
+  if (candidate.emailAddress != body.emailAddress){
+
+    errorMsg = "Email address field cannot be changed."
+
+  }
+
+  return errorMsg;
+}
 
 async function updateCandidate (params) {
 

@@ -33,7 +33,7 @@ class Candidate
         return await DBWrapper.Add(params)
     }
 
-    static async update(candidate) {
+    static async update(candidate, existingCandidate) {
 
         const params = {
             TableName : process.env.CANDIDATE_TABLE,
@@ -51,7 +51,8 @@ class Candidate
             }
         }
 
-        console.log('updating candidate information in dynamo')
+        console.log('updating candidate information in dynamo');
+
         return await DBWrapper.Update(params)
     }
 

@@ -9,6 +9,7 @@ provider:
   runtime: nodejs10.x
   environment:
     CANDIDATE_TABLE: ${self:custom.candidateTable}
+    CANDIDATE_USER_POOL: ${self:custom.candidateUserPool}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -19,18 +20,25 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CANDIDATE_TABLE}"
+    - Effect: Allow
+      Action:
+        - cognito:*
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CANDIDATE_USER_POOL}"
+
 
 
 custom:
+  serverless-offline:
+    httpsProtocol: "dev-certs"
+    port: 4000
   stage: ${opt:stage, self:provider.stage}
   candidateTable: ${self:provider.stage}-candidates
   resumeBucket: ${self:provider.stage}-candidates-resume
+  candidateUserPool: ${self:provider.stage}-candidates
 
 functions:
   createCandidate:
     handler: functions/candidates/createCandidate.handler
-    # environment:
-    #   CANDIDATE_TABLE: ${self:custom.candidateTable}
     events:
       - http:
           path: candidate
@@ -40,8 +48,6 @@ functions:
 
   updateCandidate:
     handler: functions/candidates/updateCandidate.handler
-    # environment:
-    #   CANDIDATE_TABLE: ${self:custom.candidateTable}
     events:
       - http:
           path: candidate
@@ -55,10 +61,11 @@ functions:
           path: candidate/{emailAddress}
           method: get
           cors: true
-# plugins:
-#   - serverless-dynamodb-local
+plugins:
+  - serverless-dynamodb-local
 
 resources:
   #DynamoDB
   - ${file(resources/dynamodb-table.yml)}
+  - ${file(resources/cognito-user-pool.yml)}
   - ${file(resources/s3-buckets.yml)}
